@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scraper RAM calculator: how much memory your job needs — RemoteBox</title>
+<meta name="description" content="Estimate peak memory for a scraping job: browser instances, in-flight pages, OS overhead and safety margin — and the plan size that actually fits it.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/scraper-ram-calculator.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scraper RAM calculator: how much memory your job needs">
+<meta property="og:description" content="Browser instances, in-flight pages, OS overhead and safety margin — and the plan size that fits.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/scraper-ram-calculator.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="scraper-ram-calculator.html">Calculator</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap article">
+  <p class="kicker">Tool</p>
+  <h1>Scraper RAM calculator: how much memory your job needs</h1>
+  <p class="lede">Buying a bigger box to fix memory pressure only works if you know which line is
+  growing. This estimates the floor your workload sets, and shows where the memory actually goes.</p>
+
+  <div class="note"><b>Affiliate disclosure:</b> some outbound links on this site are affiliate links,
+  marked as sponsored. It does not change what we recommend.</div>
+
+  <div class="note warn"><b>This is a floor, not a measurement.</b> It models the parts you can predict —
+  process overhead and in-flight pages — and leaves leak growth to a safety margin you control. Log real
+  RSS as described in <a href="how-much-ram-a-scraper-needs.html">the sizing guide</a> and compare.</div>
+
+  <div class="calc">
+    <div class="calc-grid">
+      <div class="field">
+        <label for="mode">How the pages are fetched</label>
+        <select id="mode">
+          <option value="250">Headless browser (Chrome, Playwright, Puppeteer)</option>
+          <option value="420">Headed browser with a visible window</option>
+          <option value="15">HTTP requests only — no browser at all</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="conc">Parallel workers / browser instances</label>
+        <input id="conc" type="number" min="1" step="1" value="4">
+      </div>
+      <div class="field">
+        <label for="tabs">Pages in flight per worker</label>
+        <input id="tabs" type="number" min="1" step="1" value="3">
+      </div>
+      <div class="field">
+        <label for="weight">Average page weight <span class="hint">megabytes, fully loaded</span></label>
+        <input id="weight" type="number" min="0.05" step="0.1" value="2">
+      </div>
+      <div class="field">
+        <label for="mult">Rendered-page overhead factor <span class="hint">memory held per page vs its transfer size</span></label>
+        <input id="mult" type="number" min="1" step="1" value="8">
+      </div>
+      <div class="field">
+        <label for="os">Operating system base <span class="hint">GB</span></label>
+        <select id="os">
+          <option value="2.5">Windows Server (about 2.5)</option>
+          <option value="0.6">Linux server (about 0.6)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="margin">Safety margin <span class="hint">% — covers leaks and spikes</span></label>
+        <input id="margin" type="number" min="0" max="200" step="5" value="30">
+      </div>
+    </div>
+
+    <div class="calc-out">
+      <h3>Result</h3>
+      <div class="big" id="peak">— <span>estimated peak memory</span></div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="k">Fits in</div><div class="v" id="plan">—</div></div>
+        <div class="kpi"><div class="k">Workers × pages in flight</div><div class="v" id="inflight">—</div></div>
+        <div class="kpi"><div class="k">Headroom on that plan</div><div class="v" id="head">—</div></div>
+      </div>
+
+      <div class="bars">
+        <div class="bar-row"><span>Operating system</span><span class="track"><span class="fill" id="barOs"></span></span><span class="v" id="valOs">—</span></div>
+        <div class="bar-row"><span>Process overhead</span><span class="track"><span class="fill" id="barProc"></span></span><span class="v" id="valProc">—</span></div>
+        <div class="bar-row"><span>Pages in flight</span><span class="track"><span class="fill warn" id="barPages"></span></span><span class="v" id="valPages">—</span></div>
+        <div class="bar-row"><span>Safety margin</span><span class="track"><span class="fill warn" id="barMargin"></span></span><span class="v" id="valMargin">—</span></div>
+      </div>
+
+      <div class="verdict" id="verdict">—</div>
+
+      <div class="formula">
+        <b>Formulas, so you can check the maths:</b><br>
+        <code>pages in flight = workers × pages per worker</code><br>
+        <code>process overhead = workers × per-browser cost (from the first field)</code><br>
+        <code>page memory = pages in flight × page weight × overhead factor</code><br>
+        <code>peak = (OS base + process overhead + page memory) × (1 + margin ÷ 100)</code><br>
+        <code>plan = smallest of 1 / 2 / 4 / 8 / 16 / 32 / 64 GB that leaves 20% free</code>
+      </div>
+    </div>
+  </div>
+
+  <h2>What the model says in practice</h2>
+  <ul>
+    <li><b>Workers matter more than page weight.</b> Each browser instance carries a fixed cost before
+    it loads anything, so going from 2 workers to 6 adds most of a gigabyte regardless of content.</li>
+    <li><b>Pages in flight is the line people forget.</b> Four workers with three open pages each is
+    twelve rendered documents in memory at once, not four.</li>
+    <li><b>If the estimate surprises you, cut pages in flight before cutting workers.</b> It reduces
+    memory more per unit of throughput lost.</li>
+    <li><b>No browser at all is a different budget entirely.</b> HTTP-only fetching is roughly an order
+    of magnitude lighter — worth checking whether the target actually needs rendering.</li>
+  </ul>
+
+  <h2>Sizing after the estimate</h2>
+  <p>Use the number as the floor, then confirm against a real run: peak RSS over a full cycle, not the
+  average. If real usage keeps climbing past the estimate, you have growth that a bigger plan will only
+  postpone — recycle browser contexts and stream results to disk first.
+  Hosts that let you move between plan sizes without rebuilding make this iteration cheap, which is one
+  reason we look for <a data-out="rdpm" href="https://rdp.monster/">plans that resize in place</a>
+  rather than requiring a manual migration.</p>
+
+  <p class="small">Estimates only. The tool makes no network requests: everything is computed in your
+  browser and nothing is sent anywhere.</p>
+
+  <p class="small sponsored-note" hidden>Some links on this page are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended above.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="how-much-ram-a-scraper-needs.html">Sizing guide</a>
+        <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var PLANS = [1, 2, 4, 8, 16, 32, 64];
+  function num(id) { var v = parseFloat(document.getElementById(id).value); return isFinite(v) ? v : 0; }
+  function gb(x) { return x >= 1 ? x.toFixed(2) + " GB" : Math.round(x * 1024) + " MB"; }
+  function compute() {
+    var perBrowser = num("mode");           // MB
+    var workers = Math.max(1, num("conc"));
+    var tabs = Math.max(1, num("tabs"));
+    var weight = Math.max(0.05, num("weight"));
+    var mult = Math.max(1, num("mult"));
+    var osBase = num("os");                 // GB
+    var margin = num("margin") / 100;
+
+    var inflight = workers * tabs;
+    var procGB = (workers * perBrowser) / 1024;
+    var pagesGB = (inflight * weight * mult) / 1024;
+    var subtotal = osBase + procGB + pagesGB;
+    var peak = subtotal * (1 + margin);
+
+    document.getElementById("peak").innerHTML = gb(peak) + " <span>estimated peak memory</span>";
+    document.getElementById("inflight").textContent = workers + " × " + tabs + " = " + inflight;
+
+    var plan = PLANS.filter(function (p) { return peak <= p * 0.8; })[0];
+    var planEl = document.getElementById("plan");
+    var headEl = document.getElementById("head");
+    if (plan) {
+      planEl.textContent = plan + " GB";
+      headEl.textContent = Math.round((1 - peak / plan) * 100) + "%";
+    } else {
+      planEl.textContent = "above 64 GB";
+      headEl.textContent = "—";
+    }
+
+    var total = Math.max(peak, 0.0001);
+    function set(barId, valId, value) {
+      document.getElementById(barId).style.width = Math.max(1, (value / total) * 100) + "%";
+      document.getElementById(valId).textContent = gb(value);
+    }
+    set("barOs", "valOs", osBase);
+    set("barProc", "valProc", procGB);
+    set("barPages", "valPages", pagesGB);
+    set("barMargin", "valMargin", peak - subtotal);
+
+    var v = document.getElementById("verdict");
+    v.className = "verdict";
+    var text;
+    if (!plan) {
+      text = "This configuration is beyond a single 64 GB machine. Split the job across hosts, or " +
+             "reduce parallel workers — process overhead shrinks proportionally.";
+      v.className = "verdict bad";
+    } else if (margin < 0.2) {
+      text = "Fits in " + plan + " GB, but your safety margin is under 20%. Memory pressure rarely " +
+             "announces itself: the job starts timing out and everything looks like a network problem. " +
+             "Raise the margin or the plan.";
+      v.className = "verdict warn";
+    } else {
+      text = "Fits in " + plan + " GB with " + Math.round((1 - peak / plan) * 100) + "% spare. " +
+             "Confirm against a real run — log peak RSS over a full cycle, not the average.";
+      v.className = "verdict ok";
+    }
+    v.textContent = text;
+  }
+  ["mode","conc","tabs","weight","mult","os","margin"].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.addEventListener("input", compute);
+    el.addEventListener("change", compute);
+  });
+  compute();
+})();
+</script>
+</body>
+</html>
