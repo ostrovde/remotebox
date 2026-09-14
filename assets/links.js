@@ -8,7 +8,7 @@
  * сайт отдаёт честные адреса, а не битые партнёрские ссылки.
  */
 window.SITELINKS = {
-  rdpm:      { url: "https://rdp.monster/",     affiliate: null },
+  rdpm:      { url: "https://rdp.monster/",     affiliate: "https://rdp.monster/?ref=370" },
   digitalocean: { url: "https://www.digitalocean.com/", affiliate: null },
   hetzner:   { url: "https://www.hetzner.com/", affiliate: null },
   vultr:     { url: "https://www.vultr.com/",   affiliate: null },
