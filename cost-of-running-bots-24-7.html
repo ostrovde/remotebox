@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What running bots 24/7 actually costs per month — RemoteBox</title>
+<meta name="description" content="The real monthly cost of an always-on job: machine, bandwidth, proxies, monitoring and your own time — and the three cost lines almost nobody budgets for.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/cost-of-running-bots-24-7.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What running bots 24/7 actually costs per month">
+<meta property="og:description" content="Machine, bandwidth, proxies, monitoring and your time — plus the three cost lines almost nobody budgets for.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/cost-of-running-bots-24-7.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band band-slim">
+  <div class="wrap">
+    <figure class="band-art"><img src="assets/img/g-cost.svg" width="1200" height="320"
+      alt="Stacked coins next to a 24/7 clock and cost lines"></figure>
+  </div>
+</section>
+
+<main class="wrap article">
+  <p class="kicker">Economics</p>
+  <h1>What running bots 24/7 actually costs per month</h1>
+  <p class="lede">The plan price is the smallest part of the bill. What decides whether a job is
+  worth running is the four other lines — and three of them do not appear on any invoice.</p>
+
+  <div class="note"><b>Affiliate disclosure:</b> some outbound links here are affiliate links, marked
+  as sponsored. It does not change what we recommend.</div>
+
+  <h2>Line 1 — the machine</h2>
+  <p>Straightforward: a monthly plan sized for your workload. See
+  <a href="how-much-ram-a-scraper-needs.html">how much RAM a scraper needs</a> before paying for a
+  bigger tier. The mistake here is buying capacity for the peak minute instead of the average hour.</p>
+
+  <h2>Line 2 — bandwidth and egress</h2>
+  <p>Many hosts include a traffic allowance and bill overage. A browser-based job that loads images
+  burns an order of magnitude more than a headless one fetching JSON from the same site. Blocking
+  images and third-party scripts reduces this line directly and immediately.</p>
+
+  <h2>Line 3 — proxies</h2>
+  <p>If the target defends itself, the proxy bill can exceed the machine bill several times over — and
+  it is billed per gigabyte if you use residential addresses. Headless fetching plus blocked assets is
+  usually the single biggest saving available. The economics are covered in detail on our sister site:
+  <a href="https://ostrovde.github.io/proxystack/proxy-pricing-per-gb-vs-per-ip.html">per GB vs per
+  IP pricing</a>.</p>
+
+  <h2>Line 4 — monitoring and alerting</h2>
+  <p>Small, but not zero: an uptime check, a log destination, a notification channel. Cheap to add,
+  and it is what converts “we lost three days of data” into “we knew in twenty minutes”.</p>
+
+  <h2>Line 5 — your time</h2>
+  <p>The line nobody budgets. A job needs babysitting when:</p>
+  <ul>
+    <li>Failures are silent and you only notice in the data.</li>
+    <li>Sessions break and need manual re-authentication.</li>
+    <li>The target changes its layout and parsing silently returns empty fields.</li>
+    <li>You size the box by trial and error instead of measuring.</li>
+  </ul>
+  <p>Two hours a week of maintenance costs more than most hosting plans. Treat time as a line item,
+  and count “it needs attention weekly” as a design defect rather than a fact of life.</p>
+
+  <h2>The three cost lines almost nobody budgets</h2>
+  <ol>
+    <li><b>Retries and wasted requests.</b> A pool or setup that fails 30% of the time can double the
+    real cost of every usable result — you pay for failures too.</li>
+    <li><b>Rebuilds after incidents.</b> An exposed box that gets compromised costs a rebuild, rotated
+    secrets, and lost time, all of which dwarfs the hosting bill. See the
+    <a href="rdp-security-checklist.html">RDP security checklist</a>.</li>
+    <li><b>Migration.</b> Providers that cannot resize in place turn every sizing mistake into a
+    weekend of work, which is why the ability to move between tiers matters more than a marginally
+    cheaper plan — this is one reason we look for
+    <a data-out="rdpm" href="https://rdp.monster/">plans that resize without rebuilding</a>.</li>
+  </ol>
+
+  <h2>How to compare two setups honestly</h2>
+  <ul>
+    <li>Compute <b>cost per successful unit of work</b>, not cost per month.</li>
+    <li>Include proxy traffic, retries and egress — not just the plan.</li>
+    <li>Add your own maintenance hours at a realistic rate.</li>
+    <li>Re-run the comparison monthly: targets get harder defensively over time, and pool quality
+    drifts.</li>
+  </ul>
+
+  <div class="takeaway">
+    <h3>Short version</h3>
+    <ul>
+      <li>The plan price is the smallest cost line — time and proxies usually dominate.</li>
+      <li>Headless fetching with blocked assets cuts bandwidth and proxy cost at once.</li>
+      <li>Budget for retries, incident rebuilds and migration, not just hosting.</li>
+      <li>Compare cost per successful unit of work, and re-check it monthly.</li>
+    </ul>
+  </div>
+
+  <p class="small">Last reviewed: September 2026. Prices and allowances change constantly — confirm on
+  each vendor's own pricing page. Figures here are illustrative and deliberately not quoted as current
+  vendor prices.</p>
+
+  <p class="small sponsored-note" hidden>Some links on this page are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended above.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="how-much-ram-a-scraper-needs.html">Sizing</a>
+        <a href="rdp-security-checklist.html">Security</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links; see the disclosure above.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+</body>
+</html>

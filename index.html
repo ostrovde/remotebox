@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RemoteBox — VPS, RDP and dedicated servers, sized for real workloads</title>
+<meta name="description" content="Practical notes on remote machines for automation: how much RAM a scraper really needs, what 24/7 bots actually cost, how to set up and secure a Windows VPS.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RemoteBox — VPS, RDP and dedicated servers, sized for real workloads">
+<meta property="og:description" content="How much RAM a scraper really needs, what 24/7 automation costs, and how to secure a remote box.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band">
+  <div class="wrap band-in">
+    <div>
+      <p class="hchip"><i></i> Sized for real workloads · updated September 2026</p>
+      <h1>Remote machines, sized for what you actually run</h1>
+      <p class="lede">Most hosting advice is written to sell the next tier up. These are working notes
+      on what a scraper, a bot or a build job really needs — and where a bigger plan solves nothing.</p>
+      <div class="badges">
+        <span class="badge">Independent notes</span>
+        <span class="badge ok">No paid placements</span>
+        <span class="badge warm">Specs and prices change — verify</span>
+      </div>
+    </div>
+    <figure class="band-art">
+      <img src="assets/img/hero-rack.svg" width="1120" height="620"
+           alt="Server rack with uptime and memory gauges and a security lock">
+    </figure>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <div class="note">
+    <b>Affiliate disclosure:</b> some outbound links on this site are affiliate links. If you buy
+    through one we may earn a commission at no extra cost to you, and such links are marked as
+    sponsored. It never changes what we recommend — hosts we would not use are simply not listed.
+  </div>
+
+  <h2 id="notes">Start here</h2>
+  <div class="cards">
+    <div class="card">
+      <a class="thumb" href="rdp-vs-vps-vs-dedicated.html"><img src="assets/img/g-compare.svg"
+         width="1200" height="320" alt=""></a>
+      <div class="body">
+        <p class="tag">Guide</p>
+        <h3>RDP vs VPS vs dedicated</h3>
+        <p>Three products, one decision: does your task need a desktop, a server, or hardware nobody
+        else touches?</p>
+        <a class="more" href="rdp-vs-vps-vs-dedicated.html">Read the guide →</a>
+      </div>
+    </div>
+    <div class="card">
+      <a class="thumb" href="how-much-ram-a-scraper-needs.html"><img src="assets/img/g-ram.svg"
+         width="1200" height="320" alt=""></a>
+      <div class="body">
+        <p class="tag">Sizing</p>
+        <h3>How much RAM a scraper needs</h3>
+        <p>The four things that eat memory, in order — and why the fifth one is what actually kills
+        the process.</p>
+        <a class="more" href="how-much-ram-a-scraper-needs.html">Read the guide →</a>
+      </div>
+    </div>
+    <div class="card">
+      <a class="thumb" href="windows-vps-for-24-7-automation.html"><img src="assets/img/g-setup.svg"
+         width="1200" height="320" alt=""></a>
+      <div class="body">
+        <p class="tag">Setup</p>
+        <h3>A Windows VPS that survives the night</h3>
+        <p>Autostart, sessions, updates and the three settings that decide whether your job is still
+        running at 6am.</p>
+        <a class="more" href="windows-vps-for-24-7-automation.html">Read the guide →</a>
+      </div>
+    </div>
+    <div class="card">
+      <a class="thumb" href="rdp-security-checklist.html"><img src="assets/img/g-security.svg"
+         width="1200" height="320" alt=""></a>
+      <div class="body">
+        <p class="tag">Security</p>
+        <h3>RDP security checklist</h3>
+        <p>An exposed RDP port gets scanned within hours. The order to fix it, and what to do if you
+        have already been hit.</p>
+        <a class="more" href="rdp-security-checklist.html">Read the checklist →</a>
+      </div>
+    </div>
+  </div>
+
+  <h2>All articles</h2>
+  <ul class="artlist">
+    <li><a href="rdp-vs-vps-vs-dedicated.html"><span class="num">01</span>
+      <span class="t">RDP vs VPS vs dedicated: what your task actually needs</span>
+      <span class="arrow">→</span></a></li>
+    <li><a href="how-much-ram-a-scraper-needs.html"><span class="num">02</span>
+      <span class="t">How much RAM a scraper needs before it dies</span>
+      <span class="arrow">→</span></a></li>
+    <li><a href="windows-vps-for-24-7-automation.html"><span class="num">03</span>
+      <span class="t">A Windows VPS for 24/7 automation, step by step</span>
+      <span class="arrow">→</span></a></li>
+    <li><a href="rdp-security-checklist.html"><span class="num">04</span>
+      <span class="t">RDP security checklist for a box on the public internet</span>
+      <span class="arrow">→</span></a></li>
+    <li><a href="cost-of-running-bots-24-7.html"><span class="num">05</span>
+      <span class="t">What running bots 24/7 actually costs per month</span>
+      <span class="arrow">→</span></a></li>
+  </ul>
+
+  <h2 id="about">What this site is</h2>
+  <p>RemoteBox publishes hands-on notes about the machines behind data collection and automation:
+  virtual servers, remote desktops, dedicated hardware, and the operational details that decide
+  whether a job runs for a month or dies on the second night.</p>
+  <ul>
+    <li>We size for the workload, not for the vendor's upsell.</li>
+    <li>We do not publish invented specs or prices. Where a figure is uncertain, we link to the
+    vendor and say so.</li>
+    <li>Affiliate relationships are disclosed and never decide placement.</li>
+  </ul>
+
+  <p class="small sponsored-note" hidden>Some links on this site are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended.</p>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+        <a href="rdp-security-checklist.html">Security</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links. Vendors change specs and prices often; confirm on the vendor's own page.
+    Nothing here is legal or financial advice.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+</body>
+</html>

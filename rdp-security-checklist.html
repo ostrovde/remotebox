@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDP security checklist for a box on the public internet — RemoteBox</title>
+<meta name="description" content="An exposed RDP port is scanned within hours. The order to secure it: network exposure first, then accounts, then monitoring — and what to do if you have already been compromised.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/rdp-security-checklist.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RDP security checklist for a box on the public internet">
+<meta property="og:description" content="Network exposure first, then accounts, then monitoring — and what to do if you have already been hit.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/rdp-security-checklist.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band band-slim">
+  <div class="wrap">
+    <figure class="band-art"><img src="assets/img/g-security.svg" width="1200" height="320"
+      alt="A shield with a lock next to a security checklist"></figure>
+  </div>
+</section>
+
+<main class="wrap article">
+  <p class="kicker">Security</p>
+  <h1>RDP security checklist for a box on the public internet</h1>
+  <p class="lede">A machine with remote desktop exposed to the internet is scanned within hours of
+  coming online — not targeted, just found. The order of the fixes below matters more than the list.</p>
+
+  <div class="note"><b>Affiliate disclosure:</b> some outbound links here are affiliate links, marked
+  as sponsored. It does not change what we recommend.</div>
+
+  <h2>First: remove it from the internet</h2>
+  <p>Everything else is secondary. Remote desktop was never designed to face the open internet, and no
+  password policy compensates for exposing it.</p>
+  <ul>
+    <li><b>Restrict the source address.</b> If your provider has a firewall, allow the port only from
+    your own IP. This single change removes the overwhelming majority of the risk.</li>
+    <li><b>Or do not expose the port at all.</b> Reach the desktop over a VPN, a bastion host, or the
+    provider's own console. Then the port is invisible to scanners.</li>
+    <li><b>Check it is actually closed.</b> Scan the box from outside after the change. Do not assume
+    the rule applied — verify it.</li>
+  </ul>
+
+  <h2>Then: accounts</h2>
+  <ol>
+    <li><b>No administrator account for daily use.</b> Create a standard user for the job and for
+    yourself; keep the admin account for administration only.</li>
+    <li><b>Rename or disable the default administrator account</b> if the host's image allows it.
+    Automated attacks assume it exists under its default name.</li>
+    <li><b>Long passphrases, unique per machine.</b> Use a password manager; reuse is what turns one
+    compromise into five.</li>
+    <li><b>Enable account lockout.</b> A handful of failed attempts should lock the account, not allow
+    unlimited guessing.</li>
+    <li><b>Two-factor where the host supports it.</b> Not a substitute for restricting the port, but a
+    strong second layer.</li>
+  </ol>
+
+  <h2>Operating system</h2>
+  <ul>
+    <li>Patch on your schedule, deliberately — the opposite of the “never restart” convenience
+    setting. Delayed updates are an accepted risk, not a default.</li>
+    <li>Turn off services you do not use. Every listening service is another way in.</li>
+    <li>If the workload does not need a desktop at all, run it on a server OS without one. Fewer
+    components, smaller surface — see <a href="rdp-vs-vps-vs-dedicated.html">RDP vs VPS vs
+    dedicated</a>.</li>
+  </ul>
+
+  <h2>Monitoring — so you find out first</h2>
+  <ul>
+    <li>Review successful and failed logons periodically. A burst of failures from one address is
+    routine; a success from an address you do not recognise is an incident.</li>
+    <li>Watch outbound traffic. Compromised boxes are usually used for something else, and that shows
+    up as traffic you did not generate.</li>
+    <li>Watch for unexpected new accounts, scheduled tasks and startup entries.</li>
+  </ul>
+
+  <h2>If you think you have already been hit</h2>
+  <ol>
+    <li><b>Assume the data is gone.</b> Treat everything on the machine as disclosed.</li>
+    <li><b>Take it offline</b> rather than cleaning in place — you cannot trust a system you are
+    investigating from inside.</li>
+    <li><b>Rotate secrets that touched the box:</b> credentials, tokens, keys, wallets, session
+    cookies. This is the step people miss, and it is the one attackers rely on.</li>
+    <li><b>Rebuild from a known-good image.</b> Verification of a compromised host costs more than a
+    rebuild, and it is less certain.</li>
+    <li><b>Check your other hosts for the same mistake.</b> If one box was exposed, its siblings
+    usually were too.</li>
+  </ol>
+
+  <div class="takeaway">
+    <h3>Short version</h3>
+    <ul>
+      <li>Do not expose remote desktop to the internet; restrict the source or use a private path.</li>
+      <li>No admin account for daily work, lockout enabled, unique passphrases.</li>
+      <li>Patch deliberately and turn off what you do not use.</li>
+      <li>After a compromise: rebuild, and rotate every secret that touched the box.</li>
+    </ul>
+  </div>
+
+  <p class="small">Last reviewed: September 2026. This is operational guidance, not legal or compliance
+  advice — check what your provider and jurisdiction require.</p>
+
+  <p class="small sponsored-note" hidden>Some links on this page are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended above.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+        <a href="how-much-ram-a-scraper-needs.html">Sizing</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links; see the disclosure above.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img"
+     aria-label="Three options compared: a remote desktop, a virtual server and a dedicated machine">
+  <defs>
+    <linearGradient id="cB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e3a8a"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+    <linearGradient id="cT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f766e"/><stop offset="1" stop-color="#2dd4bf"/></linearGradient>
+    <linearGradient id="cV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d28d9"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+    <linearGradient id="cBlob" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563eb" stop-opacity=".15"/><stop offset="1" stop-color="#38bdf8" stop-opacity=".03"/></linearGradient>
+    <filter id="cS" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0b1220" flood-opacity=".14"/></filter>
+  </defs>
+  <rect width="1200" height="320" fill="none"/>
+  <circle cx="600" cy="50" r="250" fill="url(#cBlob)"/>
+  <g filter="url(#cS)">
+    <rect x="110" y="70" width="300" height="180" rx="22" fill="#fff" stroke="#e3e8ef"/>
+    <rect x="142" y="102" width="80" height="58" rx="10" fill="url(#cB)"/>
+    <rect x="142" y="176" width="236" height="12" rx="6" fill="#c9d5e6"/>
+    <rect x="142" y="200" width="170" height="12" rx="6" fill="#e2e9f3"/>
+    <text x="142" y="150" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#0b1220">  RDP</text>
+  </g>
+  <g filter="url(#cS)">
+    <rect x="450" y="70" width="300" height="180" rx="22" fill="#fff" stroke="#e3e8ef"/>
+    <rect x="482" y="102" width="80" height="58" rx="10" fill="url(#cT)"/>
+    <rect x="482" y="176" width="236" height="12" rx="6" fill="#c9d5e6"/>
+    <rect x="482" y="200" width="196" height="12" rx="6" fill="#e2e9f3"/>
+    <text x="482" y="150" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#0b1220">  VPS</text>
+  </g>
+  <g filter="url(#cS)">
+    <rect x="790" y="70" width="300" height="180" rx="22" fill="#fff" stroke="#e3e8ef"/>
+    <rect x="822" y="102" width="80" height="58" rx="10" fill="url(#cV)"/>
+    <rect x="822" y="176" width="236" height="12" rx="6" fill="#c9d5e6"/>
+    <rect x="822" y="200" width="150" height="12" rx="6" fill="#e2e9f3"/>
+    <text x="822" y="150" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="22" font-weight="700" fill="#0b1220">  Dedicated</text>
+  </g>
+</svg>

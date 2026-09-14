@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RDP vs VPS vs dedicated: what your task actually needs — RemoteBox</title>
+<meta name="description" content="Remote desktop, virtual server or bare metal: the practical differences, what each one is wrong for, and the sizing rule that stops you paying for a tier you will never use.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/rdp-vs-vps-vs-dedicated.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RDP vs VPS vs dedicated: what your task actually needs">
+<meta property="og:description" content="The practical differences, what each one is wrong for, and the sizing rule that stops you overpaying.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/rdp-vs-vps-vs-dedicated.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band band-slim">
+  <div class="wrap">
+    <figure class="band-art"><img src="assets/img/g-compare.svg" width="1200" height="320"
+      alt="Three options compared: a remote desktop, a virtual server and a dedicated machine"></figure>
+  </div>
+</section>
+
+<main class="wrap article">
+  <p class="kicker">Guide</p>
+  <h1>RDP vs VPS vs dedicated: what your task actually needs</h1>
+  <p class="lede">These are not three tiers of the same product. They are three different products that
+  solve different problems, and buying “one step up” usually means buying the wrong shape.</p>
+
+  <div class="note"><b>Affiliate disclosure:</b> some outbound links here are affiliate links, marked
+  as sponsored. It does not change what we recommend.</div>
+
+  <h2>What each one actually is</h2>
+  <p><b>RDP</b> (remote desktop) is a Windows machine you control with a graphical desktop. You see
+  windows, you click, you run desktop software. You share the physical host's CPU and memory with
+  other tenants, and the provider manages the operating system image for you.</p>
+  <p><b>VPS</b> is a virtual machine you own at the OS level. You get root or administrator, a console,
+  and a guaranteed slice of resources. Usually cheaper than RDP per unit of RAM because you are not
+  paying for a managed desktop licence.</p>
+  <p><b>Dedicated</b> is bare metal — no hypervisor, no neighbours. You pay for predictability: no
+  noisy-neighbour effects, no shared I/O, consistent CPU.</p>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th></th><th>RDP</th><th>VPS</th><th>Dedicated</th></tr></thead>
+      <tbody>
+        <tr><td>Interface</td><td>Graphical desktop</td><td>Console / SSH</td><td>Console / SSH</td></tr>
+        <tr><td>Run desktop software</td><td class="good">Yes</td><td>Only with a desktop OS</td><td>Only with a desktop OS</td></tr>
+        <tr><td>Resource isolation</td><td class="bad">Shared host</td><td>Allocated slice</td><td class="good">Total</td></tr>
+        <tr><td>Cost per GB RAM</td><td>Highest</td><td>Low</td><td>Lowest at scale</td></tr>
+        <tr><td>Right for</td><td>GUI tools, anti-detect browsers</td><td>Scripts, APIs, scheduling</td><td>Heavy parsing, many workers</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The decision in three questions</h2>
+  <ol>
+    <li><b>Does the work need a graphical desktop?</b> If a tool only exists as a Windows application
+    with a UI, you need RDP (or a VPS with a desktop OS — same thing, usually cheaper).</li>
+    <li><b>Does it need to run headless on a schedule?</b> If it is a script, a scheduler entry and a
+    log file, you want a VPS. A desktop is wasted money and an extra attack surface.</li>
+    <li><b>Is it CPU- or I/O-bound, for hours a day?</b> If parsing, rendering or video work pins the
+    CPU and you are getting throttled or noisy-neighbour slowness, dedicated pays for itself.</li>
+  </ol>
+
+  <h2>Where people overpay</h2>
+  <ul>
+    <li><b>Buying RDP for headless scripts</b> — you pay for a desktop licence and lose SSH automation
+    in the same move.</li>
+    <li><b>Buying dedicated for a job that idles 90% of the time.</b> Most scrapers are I/O-bound
+    waiting on the network; a CPU core and 2&nbsp;GB usually run them.</li>
+    <li><b>Buying big before measuring.</b> Watch actual RAM and CPU for a week on a small box before
+    sizing up. See <a href="how-much-ram-a-scraper-needs.html">how much RAM a scraper needs</a>.</li>
+    <li><b>Ignoring egress and disk I/O.</b> Both are billed or throttled separately on many hosts and
+    neither appears in the headline price.</li>
+  </ul>
+
+  <h2>Practical sizing rule</h2>
+  <p>Start one step below what you think you need, measure for a week, then move up only if a specific
+  metric says so — RAM pressure, CPU steal time, or I/O wait. Providers that sell several shapes under
+  one account make this cheap to test: RDP Monster, for example, offers
+  <a data-out="rdpm" href="https://rdp.monster/">RDP and VPS plans side by side</a>, so you can compare
+  the two shapes on the same workload instead of guessing from a spec sheet.</p>
+
+  <h2>A note on location</h2>
+  <p>Where the box sits changes results more than one extra tier of RAM. Latency to the target site
+  affects throughput on long jobs, and the datacenter's ASN affects how the target treats you. Pick
+  the region for the work, not for the provider's cheapest zone.</p>
+
+  <div class="takeaway">
+    <h3>Short version</h3>
+    <ul>
+      <li>RDP is for GUI software, VPS is for headless jobs, dedicated is for sustained CPU and I/O.</li>
+      <li>Buy the shape the task needs, not the next tier of the one you already have.</li>
+      <li>Start small, measure RAM, CPU steal and I/O wait for a week, then resize.</li>
+      <li>Region and ASN usually matter more than one extra gigabyte of RAM.</li>
+    </ul>
+  </div>
+
+  <p class="small">Last reviewed: September 2026. Specs and prices change constantly — confirm on the
+  vendor's own page. Nothing here is legal advice.</p>
+
+  <p class="small sponsored-note" hidden>Some links on this page are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended above.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="how-much-ram-a-scraper-needs.html">Sizing</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links; see the disclosure above.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+</body>
+</html>

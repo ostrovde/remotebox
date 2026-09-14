@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img"
+     aria-label="Stacked coins next to a 24/7 clock and a monthly cost figure">
+  <defs>
+    <linearGradient id="mCoin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b45309"/><stop offset="1" stop-color="#fbbf24"/></linearGradient>
+    <linearGradient id="mBlob" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f59e0b" stop-opacity=".16"/><stop offset="1" stop-color="#0f766e" stop-opacity=".03"/></linearGradient>
+    <filter id="mS" x="-40%" y="-40%" width="180%" height="200%"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0b1220" flood-opacity=".15"/></filter>
+  </defs>
+  <rect width="1200" height="320" fill="none"/>
+  <circle cx="600" cy="60" r="250" fill="url(#mBlob)"/>
+  <g filter="url(#mS)">
+    <rect x="130" y="58" width="400" height="204" rx="22" fill="#fff" stroke="#e3e8ef"/>
+    <g fill="url(#mCoin)">
+      <ellipse cx="240" cy="214" rx="70" ry="22"/>
+      <ellipse cx="240" cy="186" rx="70" ry="22"/>
+      <ellipse cx="240" cy="158" rx="70" ry="22"/>
+    </g>
+    <ellipse cx="240" cy="142" rx="70" ry="22" fill="#fcd34d"/>
+    <text x="240" y="150" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="26"
+          font-weight="700" fill="#7c2d12" text-anchor="middle">24/7</text>
+    <rect x="350" y="140" width="150" height="14" rx="7" fill="#c9d5e6"/>
+    <rect x="350" y="168" width="120" height="14" rx="7" fill="#e2e9f3"/>
+    <rect x="350" y="196" width="140" height="14" rx="7" fill="#e2e9f3"/>
+  </g>
+  <g filter="url(#mS)">
+    <rect x="580" y="58" width="490" height="204" rx="22" fill="#fff" stroke="#e3e8ef"/>
+    <circle cx="700" cy="160" r="66" fill="#eef4ff" stroke="#2563eb" stroke-width="5"/>
+    <path d="M700 118v42l30 18" fill="none" stroke="#2563eb" stroke-width="8" stroke-linecap="round"/>
+    <text x="700" y="266" font-family="system-ui,Segoe UI,Roboto,sans-serif" font-size="20"
+          fill="#5b6675" text-anchor="middle">runs while you sleep</text>
+    <rect x="810" y="122" width="220" height="14" rx="7" fill="#c9d5e6"/>
+    <rect x="810" y="150" width="170" height="14" rx="7" fill="#e2e9f3"/>
+    <rect x="810" y="178" width="200" height="14" rx="7" fill="#e2e9f3"/>
+    <rect x="810" y="206" width="130" height="14" rx="7" fill="#e2e9f3"/>
+  </g>
+</svg>

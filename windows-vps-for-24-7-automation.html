@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Windows VPS for 24/7 automation, step by step — RemoteBox</title>
+<meta name="description" content="Getting a Windows server to run an unattended job: session behaviour after disconnect, autostart that survives reboot, update policy and the three settings that decide whether it is still running at 6am.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/windows-vps-for-24-7-automation.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Windows VPS for 24/7 automation, step by step">
+<meta property="og:description" content="Session behaviour, autostart that survives reboot, update policy — the settings that decide whether your job runs all night.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/windows-vps-for-24-7-automation.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band band-slim">
+  <div class="wrap">
+    <figure class="band-art"><img src="assets/img/g-setup.svg" width="1200" height="320"
+      alt="A terminal window with configuration steps and completed checkmarks"></figure>
+  </div>
+</section>
+
+<main class="wrap article">
+  <p class="kicker">Setup</p>
+  <h1>A Windows VPS for 24/7 automation, step by step</h1>
+  <p class="lede">A Windows box that runs your job while you watch it will stop the moment you close
+  the window. Making it survive the night is four settings, and all four are about sessions and
+  updates.</p>
+
+  <div class="note"><b>Affiliate disclosure:</b> some outbound links here are affiliate links, marked
+  as sponsored. It does not change what we recommend.</div>
+
+  <h2>1. Understand what disconnect does</h2>
+  <p>Closing an RDP window does not shut down the machine, but it does end your <i>session</i>. Anything
+  that needs an interactive desktop — a browser with a visible window, a GUI application, a macro
+  recorder — dies with it unless you configure otherwise. Headless scripts and services survive
+  because they never needed the session.</p>
+  <p><b>Consequence:</b> decide early whether your tool is headless. If it is not, either keep a
+  session alive deliberately or run it as a service with a desktop session configured — both are
+  extra work, and both are avoidable if the tool has a headless mode.</p>
+
+  <h2>2. Autostart that survives a reboot</h2>
+  <p>Hosts reboot for maintenance. Set up for it:</p>
+  <ul>
+    <li><b>Task Scheduler</b> with the trigger <i>At startup</i> and the option <i>Run whether user is
+    logged on or not</i> is the most reliable path for scripts.</li>
+    <li>For interactive tools, tick <i>Run only when user is logged on</i> and ensure the account logs
+    in automatically, or use a service wrapper.</li>
+    <li>Avoid Startup folder shortcuts — they are the least reliable of the options.</li>
+    <li>Have the job write a heartbeat file with a timestamp every minute. It is the cheapest way to
+    answer “did it survive the night”.</li>
+  </ul>
+
+  <h2>3. Take control of updates</h2>
+  <p>The default Windows update behaviour will restart your machine at the exact moment your job is
+  mid-run. Configure active hours, set updates to download but not auto-restart, and restart on your
+  schedule after the job finishes.</p>
+  <p>Also confirm what the <i>host</i> patches. Some providers manage updates themselves and will
+  reboot your box on their own cadence regardless of your settings.</p>
+
+  <h2>4. Make failures loud</h2>
+  <p>An unattended job that silently stops is worse than one that crashes, because you find out days
+  later from the data. Add:</p>
+  <ul>
+    <li>A log file that is appended to, not overwritten, and rotated.</li>
+    <li>A heartbeat check from outside the box — if the file stops updating, you get a message.</li>
+    <li>Exit codes written down. A job that exits 0 after doing nothing looks identical to success.</li>
+  </ul>
+
+  <h2>The setup sequence that works</h2>
+  <ol>
+    <li>Create a dedicated non-admin user for the job (see <a href="rdp-security-checklist.html">the
+    RDP security checklist</a>).</li>
+    <li>Install dependencies and pin their versions.</li>
+    <li>Run the job once manually, end to end, and confirm output.</li>
+    <li>Register the Task Scheduler entry with <i>At startup</i> + <i>run whether logged on or not</i>.</li>
+    <li>Reboot the machine and verify the job starts on its own.</li>
+    <li>Leave it overnight. Check the heartbeat, not your memory of what you configured.</li>
+  </ol>
+  <p>Step five is the one people skip, and it is the only one that proves anything. Hosts that let you
+  reboot and reinstall quickly make this iteration cheap — with
+  <a data-out="rdpm" href="https://rdp.monster/">managed RDP plans</a> the image is the provider's
+  responsibility, which removes a whole class of “it worked yesterday” failures.</p>
+
+  <div class="takeaway">
+    <h3>Short version</h3>
+    <ul>
+      <li>Disconnecting ends your session, not the machine — interactive tools die with it.</li>
+      <li>Task Scheduler with “run whether logged on or not” beats every other autostart method.</li>
+      <li>Stop Windows from rebooting mid-job; check whether the host reboots you anyway.</li>
+      <li>Add a heartbeat file, then reboot and verify before trusting it overnight.</li>
+    </ul>
+  </div>
+
+  <p class="small">Last reviewed: September 2026. Interface details differ between Windows versions and
+  host images — confirm against your provider's documentation.</p>
+
+  <p class="small sponsored-note" hidden>Some links on this page are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended above.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="rdp-security-checklist.html">Security</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links; see the disclosure above.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+</body>
+</html>

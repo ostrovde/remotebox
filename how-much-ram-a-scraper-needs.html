@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How much RAM a scraper needs before it dies — RemoteBox</title>
+<meta name="description" content="The four things that actually consume memory in a scraping job, how to measure real usage instead of guessing, and the failure that looks like a network problem but is memory.">
+<link rel="canonical" href="https://ostrovde.github.io/remotebox/how-much-ram-a-scraper-needs.html">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How much RAM a scraper needs before it dies">
+<meta property="og:description" content="What really consumes memory in a scraping job, how to measure it, and the failure that looks like a network problem.">
+<meta property="og:image" content="https://ostrovde.github.io/remotebox/assets/img/og-cover.png">
+<meta property="og:url" content="https://ostrovde.github.io/remotebox/how-much-ram-a-scraper-needs.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap-wide">
+    <a class="brand" href="index.html"><img src="assets/img/favicon.svg" alt="">Remote<span>Box</span></a>
+    <nav>
+      <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+      <a href="index.html#notes">Notes</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </div>
+</header>
+
+<section class="band band-slim">
+  <div class="wrap">
+    <figure class="band-art"><img src="assets/img/g-ram.svg" width="1200" height="320"
+      alt="Memory bars filling toward a limit, with a warning marker"></figure>
+  </div>
+</section>
+
+<main class="wrap article">
+  <p class="kicker">Sizing</p>
+  <h1>How much RAM a scraper needs before it dies</h1>
+  <p class="lede">Most scraping jobs do not need much memory. The ones that die overnight usually die
+  from one specific habit, and it looks like a network problem right up until you watch the process.</p>
+
+  <div class="note"><b>Affiliate disclosure:</b> some outbound links here are affiliate links, marked
+  as sponsored. It does not change what we recommend.</div>
+
+  <h2>The four things that consume memory</h2>
+  <ol>
+    <li><b>The page itself.</b> A rendered product page with images can be 100–400&nbsp;MB in a real
+    browser. Multiply that by your concurrency and you have your floor.</li>
+    <li><b>The browser, not your script.</b> A headless Chrome instance has a fixed cost of roughly
+    150–300&nbsp;MB before it loads anything. Five parallel browsers is 1&nbsp;GB gone before your
+    code runs.</li>
+    <li><b>Buffers.</b> Reading whole responses into memory, holding CSV or JSON in a list, keeping
+    every result until the end. All invisible until the job is large.</li>
+    <li><b>Leaks you did not write.</b> Libraries and drivers leak too — especially long-lived browser
+    contexts that are never recycled.</li>
+  </ol>
+
+  <h2>The failure that looks like the network</h2>
+  <p>Memory pressure rarely announces itself. What you observe instead:</p>
+  <ul>
+    <li>Requests start timing out — but the network is fine and <i>everything</i> is slow.</li>
+    <li>The job works for 40 minutes and then "the site started blocking us".</li>
+    <li>The process disappears with no traceback, or the OS kills it silently.</li>
+    <li>Throughput decays gradually instead of dropping off a cliff.</li>
+  </ul>
+  <p>All four are the same story: the box began swapping, everything got slow, and the first thing you
+  blamed was the network. Watch free memory across the whole run, not just at the start.</p>
+
+  <h2>How to size it properly</h2>
+  <ol>
+    <li><b>Measure, don't guess.</b> Log RSS for the process and for each browser instance every
+    minute for a full run. The peak matters, not the average.</li>
+    <li><b>Recycle aggressively.</b> Restart browser contexts every N pages. It costs a second and
+    removes most long-run growth.</li>
+    <li><b>Stream results to disk.</b> Never hold the full dataset in memory; write as you go.</li>
+    <li><b>Cap concurrency by memory, not by ambition.</b> If one browser costs 250&nbsp;MB and you
+    need 4&nbsp;GB for the OS, that is your ceiling.</li>
+    <li><b>Leave headroom.</b> Running at 90% memory means the first traffic spike puts you into swap,
+    and swap turns a fast job into a slow one before it turns it into a dead one.</li>
+  </ol>
+
+  <h2>Rough planning numbers</h2>
+  <p>Treat these as starting points to verify, not as specifications:</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Workload</th><th>Typical floor</th><th>Where it breaks</th></tr></thead>
+      <tbody>
+        <tr><td>HTTP requests only, no browser</td><td>512&nbsp;MB – 1&nbsp;GB</td><td>Holding results in memory</td></tr>
+        <tr><td>1–2 headless browsers</td><td>2&nbsp;GB</td><td>Long-lived contexts leaking</td></tr>
+        <tr><td>4–6 headless browsers</td><td>4–8&nbsp;GB</td><td>Concurrency spiking past the cap</td></tr>
+        <tr><td>Video or canvas rendering</td><td>8&nbsp;GB+</td><td>Buffers and frame queues</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Why a bigger box is not always the answer</h2>
+  <p>If memory grows linearly with pages processed, more RAM only delays the crash. Fix the growth
+  first — recycling, streaming, capping — and then size the machine for the corrected profile. Hosts
+  that let you resize without rebuilding make this cheap to test, which is one reason we look for
+  RDP and VPS plans that can be
+  <a data-out="rdpm" href="https://rdp.monster/">moved between tiers in place</a> rather than migrated
+  by hand.</p>
+
+  <div class="takeaway">
+    <h3>Short version</h3>
+    <ul>
+      <li>Browsers, not your script, set the memory floor: 150–300&nbsp;MB each before any page loads.</li>
+      <li>Memory pressure shows up as timeouts and "blocking", not as an out-of-memory message.</li>
+      <li>Log peak RSS for a full run; recycle contexts; stream results to disk.</li>
+      <li>Fix growth before buying RAM, or you only delay the same crash.</li>
+    </ul>
+  </div>
+
+  <p class="small">Last reviewed: September 2026. Figures are illustrative starting points, not vendor
+  specifications — measure on your own workload.</p>
+
+  <p class="small sponsored-note" hidden>Some links on this page are monetised. They carry
+  <code>rel="sponsored"</code> and never affect what is recommended above.</p>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <span class="foot-brand"><img src="assets/img/favicon.svg" alt="">RemoteBox</span>
+      <span class="foot-links">
+        <a href="index.html">Home</a>
+        <a href="rdp-vs-vps-vs-dedicated.html">RDP or VPS</a>
+        <a href="rdp-security-checklist.html">Security</a>
+        <a href="index.html#about">About</a>
+      </span>
+    </div>
+    <p class="small" style="margin:16px 0 0">© 2026 RemoteBox — independent notes. Some outbound links
+    are affiliate links; see the disclosure above.</p>
+  </div>
+</footer>
+
+<script src="assets/links.js" defer></script>
+</body>
+</html>
